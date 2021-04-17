@@ -13,6 +13,9 @@ exports.index = function (req, res) {
         book_instance_count: function (callback) {
             BookInstance.countDocuments({}, callback);
         },
+        book_instance_available_count: function(callback) {
+            BookInstance.countDocuments({status:'Available'}, callback);
+        },
         author_count: function (callback) {
             Author.countDocuments({}, callback);
         },
@@ -20,6 +23,7 @@ exports.index = function (req, res) {
             Genre.countDocuments({}, callback);
         }
     }, function (err, results) {
+        console.log(results);
         res.render("index", { title: "Local Library Home", error: err, data: results });
     });
 }

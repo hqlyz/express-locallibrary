@@ -12,12 +12,12 @@ var catalogRouter = require('./routes/catalog')
 var app = express();
 
 // try to connect to the mongoDB
-// const mongoDB = "mongodb+srv://lyz:lyztest@cluster0.vqlgl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-// mongoose.connect(mongoDB);
-// mongoose.Promise = global.Promise;
-// const db = mongoose.connection;
-// db.on("error", console.error.bind(console, "Connect to mongodb failed"));
-// db.on("open", console.log.bind(console, "Open mongodb successful"));
+const mongoDB = "mongodb+srv://lyz:lyztest@cluster0.vqlgl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "Connect to mongodb failed"));
+db.on("open", console.log.bind(console, "Open mongodb successful"));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
