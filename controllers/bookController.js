@@ -6,8 +6,10 @@ const Genre = require("../models/genre");
 const async = require("async");
 
 exports.index = function (req, res) {
+    console.log.bind(console, "index");
     async.parallel({
         book_count: function (callback) {
+            console.log.bind(console, "book_count");
             Book.countDocuments({}, callback);
         },
         book_instance_count: function (callback) {
@@ -23,7 +25,7 @@ exports.index = function (req, res) {
             Genre.countDocuments({}, callback);
         }
     }, function (err, results) {
-        console.log(results);
+        console.log.bind(console, results);
         res.render("index", { title: "Local Library Home", error: err, data: results });
     });
 }
