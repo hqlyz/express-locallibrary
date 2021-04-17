@@ -1,19 +1,41 @@
-const Book = require('../models/book');
+const Book = require("../models/book");
+const BookInstance = require("../models/bookinstance");
+const Author = require("../models/author");
+const Genre = require("../models/genre");
 
-exports.index = (req, res, next) => { res.send('未实现：首页'); };
+const async = require("async");
 
-exports.book_list = (req, res, next) => { res.send('未实现：书籍列表'); };
+exports.index = function (req, res) {
+    async.parallel({
+        book_count: function (callback) {
+            Book.countDocuments({}, callback);
+        },
+        book_instance_count: function (callback) {
+            BookInstance.countDocuments({}, callback);
+        },
+        author_count: function (callback) {
+            Author.countDocuments({}, callback);
+        },
+        genre_count: function (callback) {
+            Genre.countDocuments({}, callback);
+        }
+    }, function (err, results) {
+        res.render("index", { title: "Local Library Home", error: err, data: results });
+    });
+}
 
-exports.book_detail = (req, res, next) => { res.send('未实现：书籍详细信息：' + req.params.id); };
+exports.book_list = (req, res, next) => { res.send("未实现：书籍列表"); };
 
-exports.book_create_get = (req, res, next) => { res.send('未实现：书籍创建表单的 GET'); };
+exports.book_detail = (req, res, next) => { res.send("未实现：书籍详细信息：" + req.params.id); };
 
-exports.book_create_post = (req, res, next) => { res.send('未实现：创建书籍的 POST'); };
+exports.book_create_get = (req, res, next) => { res.send("未实现：书籍创建表单的 GET"); };
 
-exports.book_delete_get = (req, res, next) => { res.send('未实现：书籍删除表单的 GET'); };
+exports.book_create_post = (req, res, next) => { res.send("未实现：创建书籍的 POST"); };
 
-exports.book_delete_post = (req, res, next) => { res.send('未实现：删除书籍的 POST'); };
+exports.book_delete_get = (req, res, next) => { res.send("未实现：书籍删除表单的 GET"); };
 
-exports.book_update_get = (req, res, next) => { res.send('未实现：书籍更新表单的 GET'); };
+exports.book_delete_post = (req, res, next) => { res.send("未实现：删除书籍的 POST"); };
 
-exports.book_update_post = (req, res, next) => { res.send('未实现：更新书籍的 POST'); };
+exports.book_update_get = (req, res, next) => { res.send("未实现：书籍更新表单的 GET"); };
+
+exports.book_update_post = (req, res, next) => { res.send("未实现：更新书籍的 POST"); };
