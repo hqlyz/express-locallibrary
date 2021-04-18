@@ -1,6 +1,13 @@
 const Author = require('../models/author');
 
-exports.author_list = (req, res, next) => { res.send('未实现：作者列表'); };
+exports.author_list = function (req, res, next) {
+    Author.find()
+        .sort([['family_name', 'ascending']])
+        .exec(function (err, list_authors) {
+            if (err) next(err);
+            res.render("author_list", { title: "Author List", author_list: list_authors });
+        });
+};
 
 exports.author_detail = (req, res, next) => { res.send('未实现：作者详细信息：' + req.params.id); };
 

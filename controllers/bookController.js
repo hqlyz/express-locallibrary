@@ -15,8 +15,8 @@ exports.index = function (req, res) {
         book_instance_count: function (callback) {
             BookInstance.countDocuments({}, callback);
         },
-        book_instance_available_count: function(callback) {
-            BookInstance.countDocuments({status:'Available'}, callback);
+        book_instance_available_count: function (callback) {
+            BookInstance.countDocuments({ status: 'Available' }, callback);
         },
         author_count: function (callback) {
             Author.countDocuments({}, callback);
@@ -28,9 +28,16 @@ exports.index = function (req, res) {
         console.log.bind(console, results);
         res.render("index", { title: "Local Library Home", error: err, data: results });
     });
-}
+};
 
-exports.book_list = (req, res, next) => { res.send("未实现：书籍列表"); };
+exports.book_list = function (req, res, next) {
+    Book.find({}, "title author")
+        .populate("author")
+        .exec(function (err, list_books) {
+            if (err) next(err);
+            res.render("book_list", { title: "Book List", book_list: list_books });
+        });
+};
 
 exports.book_detail = (req, res, next) => { res.send("未实现：书籍详细信息：" + req.params.id); };
 
