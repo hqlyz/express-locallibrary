@@ -9,7 +9,19 @@ exports.bookinstance_list = function (req, res, next) {
         });
 };
 
-exports.bookinstance_detail = (req, res, next) => { res.send('未实现：书籍副本详细信息：' + req.params.id); };
+exports.bookinstance_detail = function(req, res, next) {
+    BookInstance.findById(req.params.id)
+        .populate("book")
+        .exec(function(err, bookinstance) {
+            if(err) next(err);
+            if(bookinstance == null) {
+                var err = new Error("Bookinstance not found");
+                err.status = 404;
+                next(err);
+            }
+            res.render("bookinstance_detail", { title: "Copy: " + bookinstance.book.title, bookinstance: bookinstance});
+        });
+};
 
 exports.bookinstance_create_get = (req, res, next) => { res.send('未实现：书籍副本创建表单的 GET'); };
 
