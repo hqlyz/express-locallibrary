@@ -39,7 +39,28 @@ exports.book_list = function (req, res, next) {
         });
 };
 
-exports.book_detail = (req, res, next) => { res.send("未实现：书籍详细信息：" + req.params.id); };
+exports.book_detail = function(req, res, next) { 
+    async.parallel({
+        book: function (callback) {
+            Book.findById(req.params.id)
+                .populate("author")
+                .populate("genre")
+                .exec(callback);
+        },
+        book_instances: function (callback) {
+            BookInstance.find({"book": req.params.id})
+                .exec(callback);
+        },
+    }, function (err, results) {
+        if(err) next(err);
+        if(results.book == null) {
+            var err = new Error("Book not found");
+            err.status = 404;
+            next(err);
+        }
+        res.render("book_detail", { title: "Book Detail", book: results.book, book_instances: results.book_instances});
+    })
+};
 
 exports.book_create_get = (req, res, next) => { res.send("未实现：书籍创建表单的 GET"); };
 
