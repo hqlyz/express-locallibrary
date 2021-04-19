@@ -1,6 +1,7 @@
 const Genre = require("../models/genre");
 const Book = require("../models/book");
 const async = require("async");
+const { body,validationResult } = require("express-validator");
 
 exports.genre_list = function(req, res, next) { 
     Genre.find()
@@ -29,9 +30,38 @@ exports.genre_detail = function(req, res, next) {
     });
 };
 
-exports.genre_create_get = (req, res, next) => { res.send("未实现：类目创建表单的 GET"); };
+exports.genre_create_get = function(req, res, next) {
+    res.render("genre_form", { title: "Create Genre"});
+};
 
-exports.genre_create_post = (req, res, next) => { res.send("未实现：创建类目的 POST"); };
+exports.genre_create_post = [
+    body("name", "Genre name required").trim().isLength({min: 1}).escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        var genre = new Genre({name: req.body.name});
+        if(!errors.isEmpty()) {
+            res.render("genre_form", { title: "Create Genre", genre: genre, errors: errors.array()});
+            return;
+        } else {
+            Genre.findOne({"name": req.body.name})
+                .exec(function(err, foundGenre) {
+                    if(err) {
+                        return next(err);
+                    }
+                    if(foundGenre) {
+                        res.redirect(foundGenre.url);
+                    } else {
+                        genre.save(function (err) {
+                            if(err) {
+                                return next(err);
+                            }
+                            res.redirect(genre.url);
+                        });
+                    }
+                });
+        }
+    },
+];
 
 exports.genre_delete_get = (req, res, next) => { res.send("未实现：类目删除表单的 GET"); };
 
