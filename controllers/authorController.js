@@ -76,7 +76,7 @@ exports.author_delete_get = function(req, res, next) {
             res.redirect("/catalog/authors");
         }
         res.render("author_delete", { title: "Author Delete", author: results.author, author_books: results.author_books});
-    })
+    });
 };
 
 exports.author_delete_post = function(req, res, next) { 

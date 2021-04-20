@@ -63,9 +63,42 @@ exports.genre_create_post = [
     },
 ];
 
-exports.genre_delete_get = (req, res, next) => { res.send("未实现：类目删除表单的 GET"); };
+exports.genre_delete_get = function(req, res, next) { 
+    async.parallel({
+        genre: function (callback) {
+            Genre.findById(req.params.id).exec(callback);
+        },
+        genre_books: function (callback) {
+            Book.find({"genre": req.params.id}).exec(callback);
+        },
+    }, function (err, results) {
+        console.log(results);
+        if(err) return next(err);
+        res.render("genre_delete", { title: "Delete Genre", genre: results.genre, genre_books: results.genre_books});
+    });
+};
 
-exports.genre_delete_post = (req, res, next) => { res.send("未实现：删除类目的 POST"); };
+exports.genre_delete_post = function(req, res, next) { 
+    async.parallel({
+        genre: function (callback) {
+            Genre.findById(req.body.genreid).exec(callback);
+        },
+        genre_books: function (callback) {
+            Book.find({"genre": req.body.genreid}).exec(callback);
+        },
+    }, function (err, results) {
+        if(err) return next(err);
+        if(results.genre_books.length > 0) {
+            res.render("genre_delete", { title: "Delete Genre", genre: results.genre, genre_books: results.genre_books});
+            return;
+        }
+        Genre.findByIdAndRemove(req.body.genreid)
+            .exec(function (err) {
+                if(err) return next(err);
+                res.redirect("/catalog/genres");
+            });
+    });
+};
 
 exports.genre_update_get = (req, res, next) => { res.send("未实现：类目更新表单的 GET"); };
 

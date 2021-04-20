@@ -130,7 +130,14 @@ exports.book_create_post = [
     }
 ];
 
-exports.book_delete_get = (req, res, next) => { res.send(""); };
+exports.book_delete_get = function(req, res, next) {
+    async.parallel({
+        book: function (callback) {
+            Book.findById(req.params.id).exec(callback);
+        },
+        
+    })
+};
 
 exports.book_delete_post = (req, res, next) => { res.send(""); };
 
